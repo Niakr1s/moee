@@ -65,7 +65,7 @@ func (rec *Recorder) Start() error {
 // returns full saved filepath
 func WriteTrack(dir string, extension string, track recorder.Track, trackInfo TrackInfo) (string, error) {
 	song := trackInfo.Data.Song
-	path := filepath.Join(dir, song.SuggestedFileName(), extension)
+	path := filepath.Join(dir, song.SuggestedFileName()+extension)
 	err := os.WriteFile(path, track.Raw.Bytes(), 0666)
 	if err != nil {
 		return "", fmt.Errorf("WriteTrack() error: %v", err)
