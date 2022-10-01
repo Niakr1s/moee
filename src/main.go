@@ -9,6 +9,7 @@ import (
 func main() {
 	rec := moe.NewRecorder("d:/tmp")
 	rec.DiscardFirstTrack = true
+	rec.SaveOnlyWithLyrics = true
 	if err := rec.Start(); err != nil {
 		log.Fatal(err)
 	}

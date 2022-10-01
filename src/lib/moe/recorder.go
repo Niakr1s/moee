@@ -12,6 +12,8 @@ import (
 )
 
 type Recorder struct {
+	SaveOnlyWithLyrics bool
+
 	*recorder.Recorder
 	ws *MoeWs
 
@@ -54,6 +56,18 @@ func (rec *Recorder) Start() error {
 		case track := <-trackCh:
 			trackInfo := prevTrackInfo
 			log.Printf("got track: %v", track)
+
+			lyrics, err := GetLyrics(trackInfo.Data.Song.SuggestedFileName())
+			if err != nil {
+				log.Printf("err while GetLyrics: %v", err)
+				lyrics = ""
+				if rec.SaveOnlyWithLyrics {
+					continue
+				}
+			} else {
+				log.Printf("got lyrics with len=%d", len(lyrics))
+			}
+
 			savedPath, err := WriteTrack(rec.dir, track.Extension, track, trackInfo)
 			if err != nil {
 				log.Printf("err while WriteTrack: %v", err)
@@ -75,19 +89,14 @@ func (rec *Recorder) Start() error {
 			}
 			log.Printf("cleaned and updated metadata for %s", savedPath)
 
-			lyrics, err := GetLyrics(trackInfo.Data.Song.SuggestedFileName())
-			if err != nil {
-				log.Printf("err while GetLyrics: %v", err)
-				continue
+			if lyrics != "" {
+				err = metadata.WriteLyrics(savedPath, lyrics)
+				if err != nil {
+					log.Printf("err while WriteLyrics: %v", err)
+					continue
+				}
+				log.Printf("wrote lyrics with len=%d", len(lyrics))
 			}
-			log.Printf("got lyrics with len=%d", len(lyrics))
-
-			err = metadata.WriteLyrics(savedPath, lyrics)
-			if err != nil {
-				log.Printf("err while WriteLyrics: %v", err)
-				continue
-			}
-			log.Printf("wrote lyrics with len=%d", len(lyrics))
 		}
 	}
 }
