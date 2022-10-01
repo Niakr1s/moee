@@ -49,3 +49,8 @@ func (s Song) Artist() string {
 	}
 	return s.Artists[0].Name
 }
+
+// returns filename in format Artist - Title (without suffix)
+func (s Song) SuggestedFileName() string {
+	return fmt.Sprintf("%s - %s", s.Artist(), s.Title)
+}
