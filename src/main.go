@@ -24,6 +24,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	f, err := os.Create("moee.log")
+	if err != nil {
+		log.Fatalf("couldn't create log file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+
 	rec := moe.NewRecorder(savedir)
 	if err := rec.Start(); err != nil {
 		log.Fatal(err)
