@@ -22,7 +22,7 @@ type wsWelcomeMsg struct {
 	} `json:"d"`
 }
 
-type wsSong struct {
+type Song struct {
 	ID      int    `json:"id"`
 	Title   string `json:"title"`
 	Artists []struct {
@@ -34,7 +34,7 @@ type wsSong struct {
 	Duration int `json:"duration"`
 }
 
-func (s wsSong) String() string {
+func (s Song) String() string {
 	res := fmt.Sprintf("ID: %d, Title: %s, Duration: %v", s.ID, s.Title, s.Duration)
 	if len(s.Artists) > 0 {
 		res += fmt.Sprintf(", Artist: %s", s.Artists[0].Name)
@@ -50,11 +50,11 @@ const (
 type TrackInfo struct {
 	Op   int `json:"op"`
 	Data struct {
-		Song      wsSong    `json:"song"`
+		Song      Song      `json:"song"`
 		StartTime time.Time `json:"startTime"`
 
-		LastPlayed []wsSong `json:"lastPlayed"`
-		Listeners  int      `json:"listeners"`
+		LastPlayed []Song `json:"lastPlayed"`
+		Listeners  int    `json:"listeners"`
 	} `json:"d"`
 	Type string `json:"t"` // TRACK_UPDATE or TRACK_UPDATE_REQUEST
 }
