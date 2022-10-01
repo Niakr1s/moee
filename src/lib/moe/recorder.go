@@ -62,6 +62,7 @@ func (rec *Recorder) Start() error {
 				log.Printf("err while GetLyrics: %v", err)
 				lyrics = ""
 				if rec.SaveOnlyWithLyrics {
+					log.Printf("skipping saving track, because SaveOnlyWithLyrics=%v", rec.SaveOnlyWithLyrics)
 					continue
 				}
 			} else {
