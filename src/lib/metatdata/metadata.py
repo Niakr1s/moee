@@ -5,10 +5,18 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, USLT, TPE1, TIT2
 from mutagen.oggvorbis import OggVorbis
 
+# change it if you want debug script
+debug = False
+
+
+def printDebug(*args):
+    if debug:
+        print(args)
+
 
 # ----------- CLEAN ------------
 def cleanMetadata(musicFilePath: str):
-    print("start cleanMetadata to ", musicFilePath)
+    printDebug("start cleanMetadata to ", musicFilePath)
     ext = pathlib.Path(musicFilePath).suffix
     if ext == ".mp3":
         cleanMetadataMp3(musicFilePath)
@@ -16,11 +24,11 @@ def cleanMetadata(musicFilePath: str):
         cleanMetadataOgg(musicFilePath)
     else:
         raise Exception("wrong extension, want .mp3 or .ogg")
-    print("end cleanMetadata to ", musicFilePath)
+    printDebug("end cleanMetadata to ", musicFilePath)
 
 
 def cleanMetadataMp3(musicFilePath: str):
-    print("start cleanMetadataMp3 to ", musicFilePath)
+    printDebug("start cleanMetadataMp3 to ", musicFilePath)
     audio = MP3(musicFilePath)
     # audio = ID3(musicFilePath)
     audio.tags = None
@@ -30,7 +38,7 @@ def cleanMetadataMp3(musicFilePath: str):
 
 
 def cleanMetadataOgg(musicFilePath: str):
-    print("start cleanMetadataOgg to ", musicFilePath)
+    printDebug("start cleanMetadataOgg to ", musicFilePath)
     audio = OggVorbis(musicFilePath)
     audio.clear()
     audio.save()
@@ -38,7 +46,7 @@ def cleanMetadataOgg(musicFilePath: str):
 
 # ----------- LYRICS ------------
 def writeLyrics(musicFilePath: str, contents: str):
-    print("start writeLyrics to ", musicFilePath)
+    printDebug("start writeLyrics to ", musicFilePath)
     ext = pathlib.Path(musicFilePath).suffix
     if ext == ".mp3":
         writeLyricsMp3(musicFilePath, contents)
@@ -46,11 +54,11 @@ def writeLyrics(musicFilePath: str, contents: str):
         writeLyricsOgg(musicFilePath, contents)
     else:
         raise Exception("wrong extension, want .mp3 or .ogg")
-    print("end writeLyrics to ", musicFilePath)
+    printDebug("end writeLyrics to ", musicFilePath)
 
 
 def writeLyricsMp3(musicFilePath: str, contents: str):
-    print("start writeLyricsMp3 to ", musicFilePath)
+    printDebug("start writeLyricsMp3 to ", musicFilePath)
     # audio = ID3(musicFilePath)
     # audio.add(USLT(lang='   ', desc='', text=contents))
     audio = MP3(musicFilePath)
@@ -62,7 +70,7 @@ def writeLyricsMp3(musicFilePath: str, contents: str):
 
 
 def writeLyricsOgg(musicFilePath: str, contents: str):
-    print("start writeLyricsOgg to ", musicFilePath)
+    printDebug("start writeLyricsOgg to ", musicFilePath)
     audio = OggVorbis(musicFilePath)
     audio['lyrics'] = contents
     audio.save()
@@ -70,7 +78,7 @@ def writeLyricsOgg(musicFilePath: str, contents: str):
 
 # ----------- ARTIST ------------
 def writeArtist(musicFilePath: str, contents: str):
-    print("start writeArtist to ", musicFilePath)
+    printDebug("start writeArtist to ", musicFilePath)
     ext = pathlib.Path(musicFilePath).suffix
     if ext == ".mp3":
         writeArtistMp3(musicFilePath, contents)
@@ -78,11 +86,11 @@ def writeArtist(musicFilePath: str, contents: str):
         writeArtistOgg(musicFilePath, contents)
     else:
         raise Exception("wrong extension, want .mp3 or .ogg")
-    print("end writeArtist to ", musicFilePath)
+    printDebug("end writeArtist to ", musicFilePath)
 
 
 def writeArtistMp3(musicFilePath: str, contents: str):
-    print("start writeArtistMp3 to ", musicFilePath)
+    printDebug("start writeArtistMp3 to ", musicFilePath)
     # audio = ID3(musicFilePath)
     # audio.add(TPE1(text=contents))
     audio = MP3(musicFilePath)
@@ -94,7 +102,7 @@ def writeArtistMp3(musicFilePath: str, contents: str):
 
 
 def writeArtistOgg(musicFilePath: str, contents: str):
-    print("start writeArtistOgg to ", musicFilePath)
+    printDebug("start writeArtistOgg to ", musicFilePath)
     audio = OggVorbis(musicFilePath)
     audio['artist'] = contents
     audio.save()
@@ -102,7 +110,7 @@ def writeArtistOgg(musicFilePath: str, contents: str):
 
 # ----------- TITLE ------------
 def writeTitle(musicFilePath: str, contents: str):
-    print("start writeTitle to ", musicFilePath)
+    printDebug("start writeTitle to ", musicFilePath)
     ext = pathlib.Path(musicFilePath).suffix
     if ext == ".mp3":
         writeTitleMp3(musicFilePath, contents)
@@ -110,11 +118,11 @@ def writeTitle(musicFilePath: str, contents: str):
         writeTitleOgg(musicFilePath, contents)
     else:
         raise Exception("wrong extension, want .mp3 or .ogg")
-    print("end writeTitle to ", musicFilePath)
+    printDebug("end writeTitle to ", musicFilePath)
 
 
 def writeTitleMp3(musicFilePath: str, contents: str):
-    print("start writeTitleMp3 to ", musicFilePath)
+    printDebug("start writeTitleMp3 to ", musicFilePath)
     # audio = ID3(musicFilePath)
     # audio.add(TIT2(text=contents))
     audio = MP3(musicFilePath)
@@ -126,7 +134,7 @@ def writeTitleMp3(musicFilePath: str, contents: str):
 
 
 def writeTitleOgg(musicFilePath: str, contents: str):
-    print("start writeTitleOgg to ", musicFilePath)
+    printDebug("start writeTitleOgg to ", musicFilePath)
     audio = OggVorbis(musicFilePath)
     audio['title'] = contents
     audio.save()
@@ -148,7 +156,7 @@ clean [filepath] - Erases metadata from audiofile
 
     # 3 is minimum arguments
     if len(args) < 3:
-        print(usage)
+        printDebug(usage)
         raise Exception("not enough arguments")
 
     action = sys.argv[1]
@@ -159,7 +167,7 @@ clean [filepath] - Erases metadata from audiofile
         return
 
     if len(args) < 4:
-        print(usage)
+        printDebug(usage)
         raise Exception("not enough arguments")
     contents = sys.argv[3]
 
