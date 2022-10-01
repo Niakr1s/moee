@@ -1,0 +1,1 @@
+go build -o moee.exe src/main.go
