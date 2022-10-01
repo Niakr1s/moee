@@ -88,7 +88,6 @@ func (rec *Recorder) Start() error {
 			if err != nil {
 				log.Printf("err while WriteTitle: %v", err)
 			}
-			log.Printf("cleaned and updated metadata for %s", savedPath)
 
 			if lyrics != "" {
 				err = metadata.WriteLyrics(savedPath, lyrics)
