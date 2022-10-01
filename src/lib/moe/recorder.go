@@ -1,7 +1,10 @@
 package moe
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/niakr1s/moee/src/lib/recorder"
 )
@@ -47,16 +50,24 @@ func (rec *Recorder) Start() error {
 			currentTrackInfo = info
 
 		case track := <-trackCh:
+			trackInfo := prevTrackInfo
 			log.Printf("got track: %v", track)
-			err := WriteTrack(rec.dir, track.Extension, prevTrackInfo)
+			savedPath, err := WriteTrack(rec.dir, track.Extension, track, trackInfo)
 			if err != nil {
-				log.Printf("err while WriteTrack(rec.dir, prevTrackInfo): %v", err)
+				log.Printf("err while WriteTrack: %v", err)
 				continue
 			}
+			log.Printf("saved track with info %s to %s", trackInfo, savedPath)
 		}
 	}
 }
 
-func WriteTrack(dir string, extension string, trackInfo TrackInfo) error {
-	return nil
+// returns full saved filepath
+func WriteTrack(dir string, extension string, track recorder.Track, trackInfo TrackInfo) (string, error) {
+	path := filepath.Join(dir, fmt.Sprintf("%s - %s", trackInfo.Data.Song.Artist(), trackInfo.Data.Song.Title), extension)
+	err := os.WriteFile(path, track.Raw.Bytes(), 0666)
+	if err != nil {
+		return "", fmt.Errorf("WriteTrack() error: %v", err)
+	}
+	return path, nil
 }
