@@ -39,7 +39,7 @@ type Song struct {
 }
 
 func (s Song) String() string {
-	res := fmt.Sprintf("ID: %d, Title: %s, Artist: %s, Duration: %v", s.ID, s.Title, s.Artist(), s.Duration)
+	res := fmt.Sprintf("ID: %d, Artist: %s, Title: %s, Duration: %v", s.ID, s.Artist(), s.Title, s.Duration)
 	return res
 }
 
