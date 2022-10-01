@@ -15,6 +15,11 @@ func Test_moeWs_Connect(t *testing.T) {
 	msg := <-w.wsTrackCh
 	t.Logf("got track message with type %s", msg.Type)
 
+	// use this to check heartbeat
+	// w.sendHeartbeat()
+	// <-time.After(time.Second)
+	// t.FailNow()
+
 	time.After(time.Millisecond * 300)
 	w.close()
 

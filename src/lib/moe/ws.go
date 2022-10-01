@@ -56,8 +56,6 @@ type moeWs struct {
 
 	// needed to close
 	wsTrackCh chan wsTrackMsg
-
-	heartbeat int //interval
 }
 
 func (w *moeWs) Connect() error {
@@ -107,7 +105,8 @@ func (w *moeWs) Connect() error {
 					return
 				}
 				log.Printf("got welcome message: %s", msg.Data.Message)
-				w.heartbeat = msg.Data.Heartbeat
+				interval := msg.Data.Heartbeat
+				w.startHeartbeat(interval)
 
 			case 1:
 				// it's track message
@@ -119,11 +118,13 @@ func (w *moeWs) Connect() error {
 				}
 				w.wsTrackCh <- msg
 
+			case 10:
+				log.Printf("heartbeat confirmed")
+
 			default:
 				log.Printf("wsMessage: unknown message Op; %d", msg.Op)
 				return
 			}
-
 		}
 	}()
 
@@ -132,4 +133,26 @@ func (w *moeWs) Connect() error {
 
 func (w *moeWs) close() {
 	w.conn.Close() // after this, w.doneCh will be closed automatically
+}
+
+func (w *moeWs) startHeartbeat(interval int) {
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Millisecond * time.Duration(interval)):
+				w.sendHeartbeat()
+			case <-w.doneCh:
+				return
+			}
+		}
+	}()
+}
+
+func (w *moeWs) sendHeartbeat() {
+	err := w.conn.WriteJSON(wsMessage{Op: 9})
+	if err != nil {
+		log.Printf("couldn't send heartbeat: %v", err)
+	} else {
+		log.Printf("heartbeat send")
+	}
 }
