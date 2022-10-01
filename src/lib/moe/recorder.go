@@ -48,7 +48,7 @@ func (rec *Recorder) Start() error {
 
 		case track := <-trackCh:
 			log.Printf("got track: %v", track)
-			err := WriteTrack(rec.dir, prevTrackInfo)
+			err := WriteTrack(rec.dir, track.Extension, prevTrackInfo)
 			if err != nil {
 				log.Printf("err while WriteTrack(rec.dir, prevTrackInfo): %v", err)
 				continue
@@ -57,6 +57,6 @@ func (rec *Recorder) Start() error {
 	}
 }
 
-func WriteTrack(dir string, trackInfo TrackInfo) error {
+func WriteTrack(dir string, extension string, trackInfo TrackInfo) error {
 	return nil
 }
