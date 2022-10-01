@@ -35,11 +35,15 @@ type Song struct {
 }
 
 func (s Song) String() string {
-	res := fmt.Sprintf("ID: %d, Title: %s, Duration: %v", s.ID, s.Title, s.Duration)
-	if len(s.Artists) > 0 {
-		res += fmt.Sprintf(", Artist: %s", s.Artists[0].Name)
-	}
+	res := fmt.Sprintf("ID: %d, Title: %s, Artist: %s, Duration: %v", s.ID, s.Title, s.Artist(), s.Duration)
 	return res
+}
+
+func (s Song) Artist() string {
+	if len(s.Artists) == 0 {
+		return ""
+	}
+	return s.Artists[0].Name
 }
 
 const (
