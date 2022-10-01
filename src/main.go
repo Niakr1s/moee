@@ -32,6 +32,7 @@ func main() {
 	log.SetOutput(f)
 
 	rec := moe.NewRecorder(savedir)
+	rec.DiscardFirstTrack = true
 	if err := rec.Start(); err != nil {
 		log.Fatal(err)
 	}
