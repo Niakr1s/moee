@@ -61,6 +61,20 @@ func (rec *Recorder) Start() error {
 			}
 			log.Printf("saved track with info %s to %s", trackInfo, savedPath)
 
+			err = metadata.WriteClean(savedPath)
+			if err != nil {
+				log.Printf("err while WriteClean: %v", err)
+			}
+			err = metadata.WriteArtist(savedPath, trackInfo.Data.Song.Artist())
+			if err != nil {
+				log.Printf("err while WriteArtist: %v", err)
+			}
+			err = metadata.WriteTitle(savedPath, trackInfo.Data.Song.Title)
+			if err != nil {
+				log.Printf("err while WriteTitle: %v", err)
+			}
+			log.Printf("cleaned and updated metadata for %s", savedPath)
+
 			lyrics, err := GetLyrics(trackInfo.Data.Song.SuggestedFileName())
 			if err != nil {
 				log.Printf("err while GetLyrics: %v", err)
