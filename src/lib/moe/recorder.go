@@ -74,7 +74,7 @@ func (rec *Recorder) Start() error {
 				log.Printf("err while WriteTrack: %v", err)
 				continue
 			}
-			log.Printf("saved track with info %s to %s", trackInfo, savedPath)
+			log.Printf("saved track %s with info %s", track, trackInfo)
 
 			err = metadata.WriteClean(savedPath)
 			if err != nil {
