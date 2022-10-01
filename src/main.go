@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	rec := moe.NewRecorder()
+	rec := moe.NewRecorder("d:/tmp")
 	if err := rec.Start(); err != nil {
 		log.Fatal(err)
 	}

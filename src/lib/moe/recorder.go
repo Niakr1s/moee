@@ -9,12 +9,15 @@ import (
 type Recorder struct {
 	rec *recorder.Recorder
 	ws  *MoeWs
+
+	dir string
 }
 
-func NewRecorder() *Recorder {
+func NewRecorder(dir string) *Recorder {
 	return &Recorder{
 		rec: recorder.NewRecorder("https://listen.moe/stream"),
 		ws:  &MoeWs{},
+		dir: dir,
 	}
 }
 
@@ -32,13 +35,28 @@ func (rec *Recorder) Start() error {
 	trackInfoCh := rec.ws.wsTrackInfoCh
 	trackCh := rec.rec.TrackCh()
 
+	var prevTrackInfo wsTrackInfo
+	var currentTrackInfo wsTrackInfo
+
 	for {
 		select {
+		// trackInfo usually comes faster then track
 		case info := <-trackInfoCh:
-			log.Printf("info: %v", info)
+			log.Printf("got track info: %v", info)
+			prevTrackInfo = currentTrackInfo
+			currentTrackInfo = info
+
 		case track := <-trackCh:
-			log.Printf("track: %v", track)
-			// in wsTrack we have already info about new song, so let's copy song's info about
+			log.Printf("got track: %v", track)
+			err := WriteTrack(rec.dir, prevTrackInfo)
+			if err != nil {
+				log.Printf("err while WriteTrack(rec.dir, prevTrackInfo): %v", err)
+				continue
+			}
 		}
 	}
+}
+
+func WriteTrack(filepath string, trackInfo wsTrackInfo) error {
+	return nil
 }
