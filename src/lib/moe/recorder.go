@@ -57,6 +57,6 @@ func (rec *Recorder) Start() error {
 	}
 }
 
-func WriteTrack(filepath string, trackInfo TrackInfo) error {
+func WriteTrack(dir string, trackInfo TrackInfo) error {
 	return nil
 }
