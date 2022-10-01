@@ -12,17 +12,17 @@ import (
 )
 
 type Recorder struct {
-	rec *recorder.Recorder
-	ws  *MoeWs
+	*recorder.Recorder
+	ws *MoeWs
 
 	dir string
 }
 
 func NewRecorder(dir string) *Recorder {
 	return &Recorder{
-		rec: recorder.NewRecorder("https://listen.moe/stream"),
-		ws:  &MoeWs{},
-		dir: dir,
+		Recorder: recorder.NewRecorder("https://listen.moe/stream"),
+		ws:       &MoeWs{},
+		dir:      dir,
 	}
 }
 
@@ -32,13 +32,13 @@ func (rec *Recorder) Start() error {
 		return err
 	}
 
-	err = rec.rec.StartRecord()
+	err = rec.StartRecord()
 	if err != nil {
 		return err
 	}
 
 	trackInfoCh := rec.ws.trackInfoCh
-	trackCh := rec.rec.TrackCh()
+	trackCh := rec.TrackCh()
 
 	var prevTrackInfo TrackInfo
 	var currentTrackInfo TrackInfo

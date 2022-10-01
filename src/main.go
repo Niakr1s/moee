@@ -8,6 +8,7 @@ import (
 
 func main() {
 	rec := moe.NewRecorder("d:/tmp")
+	rec.DiscardFirstTrack = true
 	if err := rec.Start(); err != nil {
 		log.Fatal(err)
 	}
