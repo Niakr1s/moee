@@ -66,12 +66,14 @@ func (rec *Recorder) Start() error {
 				log.Printf("err while GetLyrics: %v", err)
 				continue
 			}
+			log.Printf("got lyrics with len=%d", len(lyrics))
 
 			err = metadata.WriteLyrics(savedPath, lyrics)
 			if err != nil {
 				log.Printf("err while WriteLyrics: %v", err)
 				continue
 			}
+			log.Printf("wrote lyrics with len=%d", len(lyrics))
 		}
 	}
 }
