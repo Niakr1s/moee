@@ -2,6 +2,7 @@ package moe
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/url"
 	"time"
@@ -33,6 +34,14 @@ type wsSong struct {
 	Duration int `json:"duration"`
 }
 
+func (s wsSong) String() string {
+	res := fmt.Sprintf("ID: %d, Title: %s, Duration: %v", s.ID, s.Title, s.Duration)
+	if len(s.Artists) > 0 {
+		res += fmt.Sprintf(", Artist: %s", s.Artists[0].Name)
+	}
+	return res
+}
+
 const (
 	TRACK_UPDATE         = "TRACK_UPDATE"
 	TRACK_UPDATE_REQUEST = "TRACK_UPDATE_REQUEST"
@@ -48,6 +57,10 @@ type wsTrackMsg struct {
 		Listeners  int      `json:"listeners"`
 	} `json:"d"`
 	Type string `json:"t"` // TRACK_UPDATE or TRACK_UPDATE_REQUEST
+}
+
+func (s wsTrackMsg) String() string {
+	return fmt.Sprintf("Type: %s, StartTime: %v, Song: [%v]", s.Type, s.Data.StartTime, s.Data.Song)
 }
 
 type MoeWs struct {
