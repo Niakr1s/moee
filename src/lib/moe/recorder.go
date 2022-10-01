@@ -6,7 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
+	metadata "github.com/niakr1s/moee/src/lib/metatdata"
 	"github.com/niakr1s/moee/src/lib/recorder"
+	"github.com/raitonoberu/ytmusic"
 )
 
 type Recorder struct {
@@ -58,6 +60,18 @@ func (rec *Recorder) Start() error {
 				continue
 			}
 			log.Printf("saved track with info %s to %s", trackInfo, savedPath)
+
+			lyrics, err := GetLyrics(trackInfo.Data.Song.SuggestedFileName())
+			if err != nil {
+				log.Printf("err while GetLyrics: %v", err)
+				continue
+			}
+
+			err = metadata.WriteLyrics(savedPath, lyrics)
+			if err != nil {
+				log.Printf("err while WriteLyrics: %v", err)
+				continue
+			}
 		}
 	}
 }
@@ -71,4 +85,18 @@ func WriteTrack(dir string, extension string, track recorder.Track, trackInfo Tr
 		return "", fmt.Errorf("WriteTrack() error: %v", err)
 	}
 	return path, nil
+}
+
+func GetLyrics(query string) (string, error) {
+	searchResult, err := ytmusic.Search(query).Next()
+	if err != nil {
+		return "", err
+	}
+	if len(searchResult.Tracks) == 0 {
+		return "", fmt.Errorf("got zero tracks")
+	}
+	track := searchResult.Tracks[0]
+	videoId := track.VideoID
+
+	return ytmusic.GetLyrics(videoId)
 }
