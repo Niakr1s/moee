@@ -50,7 +50,7 @@ type wsTrackMsg struct {
 	Type string `json:"t"` // TRACK_UPDATE or TRACK_UPDATE_REQUEST
 }
 
-type moeWs struct {
+type MoeWs struct {
 	doneCh chan struct{}
 	conn   *websocket.Conn
 
@@ -58,7 +58,11 @@ type moeWs struct {
 	wsTrackCh chan wsTrackMsg
 }
 
-func (w *moeWs) Connect() error {
+func (w *MoeWs) WsTrackCh() <-chan wsTrackMsg {
+	return w.wsTrackCh
+}
+
+func (w *MoeWs) Connect() error {
 	w.doneCh = make(chan struct{})
 	w.wsTrackCh = make(chan wsTrackMsg)
 
@@ -131,11 +135,11 @@ func (w *moeWs) Connect() error {
 	return nil
 }
 
-func (w *moeWs) close() {
+func (w *MoeWs) close() {
 	w.conn.Close() // after this, w.doneCh will be closed automatically
 }
 
-func (w *moeWs) startHeartbeat(interval int) {
+func (w *MoeWs) startHeartbeat(interval int) {
 	go func() {
 		for {
 			select {
@@ -148,7 +152,7 @@ func (w *moeWs) startHeartbeat(interval int) {
 	}()
 }
 
-func (w *moeWs) sendHeartbeat() {
+func (w *MoeWs) sendHeartbeat() {
 	err := w.conn.WriteJSON(wsMessage{Op: 9})
 	if err != nil {
 		log.Printf("couldn't send heartbeat: %v", err)
