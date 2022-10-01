@@ -47,7 +47,7 @@ const (
 	TRACK_UPDATE_REQUEST = "TRACK_UPDATE_REQUEST"
 )
 
-type wsTrackMsg struct {
+type wsTrackInfo struct {
 	Op   int `json:"op"`
 	Data struct {
 		Song      wsSong    `json:"song"`
@@ -59,7 +59,7 @@ type wsTrackMsg struct {
 	Type string `json:"t"` // TRACK_UPDATE or TRACK_UPDATE_REQUEST
 }
 
-func (s wsTrackMsg) String() string {
+func (s wsTrackInfo) String() string {
 	return fmt.Sprintf("Type: %s, StartTime: %v, Song: [%v]", s.Type, s.Data.StartTime, s.Data.Song)
 }
 
@@ -68,16 +68,16 @@ type MoeWs struct {
 	conn   *websocket.Conn
 
 	// needed to close
-	wsTrackCh chan wsTrackMsg
+	wsTrackInfoCh chan wsTrackInfo
 }
 
-func (w *MoeWs) WsTrackCh() <-chan wsTrackMsg {
-	return w.wsTrackCh
+func (w *MoeWs) WsTrackInfoCh() <-chan wsTrackInfo {
+	return w.wsTrackInfoCh
 }
 
 func (w *MoeWs) Connect() error {
 	w.doneCh = make(chan struct{})
-	w.wsTrackCh = make(chan wsTrackMsg)
+	w.wsTrackInfoCh = make(chan wsTrackInfo)
 
 	u := url.URL{Scheme: "wss", Host: "listen.moe", Path: "/gateway_v2"}
 	log.Printf("connecting to %s", u.String())
@@ -91,7 +91,7 @@ func (w *MoeWs) Connect() error {
 	// listens to done channel and closes everything
 	go func() {
 		<-w.doneCh
-		close(w.wsTrackCh)
+		close(w.wsTrackInfoCh)
 	}()
 
 	// will close w.doneCh on any error
@@ -127,13 +127,13 @@ func (w *MoeWs) Connect() error {
 
 			case 1:
 				// it's track message
-				msg := wsTrackMsg{}
+				msg := wsTrackInfo{}
 				err = json.Unmarshal(message, &msg)
 				if err != nil {
-					log.Println("json.Unmarshal wsTrackMsg:", err)
+					log.Println("json.Unmarshal wsTrackInfo:", err)
 					return
 				}
-				w.wsTrackCh <- msg
+				w.wsTrackInfoCh <- msg
 
 			case 10:
 				log.Printf("heartbeat confirmed")

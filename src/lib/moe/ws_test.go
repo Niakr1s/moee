@@ -12,7 +12,7 @@ func Test_moeWs_Connect(t *testing.T) {
 		t.Fatalf("couldn't connect to moe ws server: %v", err)
 	}
 
-	msg := <-w.wsTrackCh
+	msg := <-w.wsTrackInfoCh
 	t.Logf("got track message with type %s", msg.Type)
 
 	// use this to check heartbeat
@@ -24,7 +24,7 @@ func Test_moeWs_Connect(t *testing.T) {
 	w.close()
 
 	<-w.doneCh
-	if _, ok := <-w.wsTrackCh; ok {
+	if _, ok := <-w.wsTrackInfoCh; ok {
 		t.Fatalf("got valid track message even after close: %v", err)
 	}
 }

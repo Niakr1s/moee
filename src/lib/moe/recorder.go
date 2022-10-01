@@ -29,7 +29,7 @@ func (rec *Recorder) Start() error {
 		return err
 	}
 
-	trackInfoCh := rec.ws.wsTrackCh
+	trackInfoCh := rec.ws.wsTrackInfoCh
 	trackCh := rec.rec.TrackCh()
 
 	for {
