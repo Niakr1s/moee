@@ -68,7 +68,7 @@ func (w *MoeWs) Connect() error {
 				log.Println("json.Unmarshal(message, &wsMsg):", err)
 				return
 			}
-			log.Printf("recv msg.Op: %d", msg.Op)
+			// log.Printf("recv msg.Op: %d", msg.Op)
 
 			switch msg.Op {
 			case 0:
@@ -94,7 +94,7 @@ func (w *MoeWs) Connect() error {
 				w.trackInfoCh <- msg
 
 			case 10:
-				log.Printf("heartbeat confirmed")
+				// log.Printf("heartbeat confirmed")
 
 			default:
 				log.Printf("wsMessage: unknown message Op; %d", msg.Op)
@@ -127,7 +127,7 @@ func (w *MoeWs) sendHeartbeat() {
 	err := w.conn.WriteJSON(wsMessage{Op: 9})
 	if err != nil {
 		log.Printf("couldn't send heartbeat: %v", err)
-	} else {
-		log.Printf("heartbeat send")
+		return
 	}
+	// log.Printf("heartbeat send")
 }
