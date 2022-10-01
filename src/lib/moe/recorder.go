@@ -32,11 +32,11 @@ func (rec *Recorder) Start() error {
 		return err
 	}
 
-	trackInfoCh := rec.ws.wsTrackInfoCh
+	trackInfoCh := rec.ws.trackInfoCh
 	trackCh := rec.rec.TrackCh()
 
-	var prevTrackInfo wsTrackInfo
-	var currentTrackInfo wsTrackInfo
+	var prevTrackInfo TrackInfo
+	var currentTrackInfo TrackInfo
 
 	for {
 		select {
@@ -57,6 +57,6 @@ func (rec *Recorder) Start() error {
 	}
 }
 
-func WriteTrack(filepath string, trackInfo wsTrackInfo) error {
+func WriteTrack(filepath string, trackInfo TrackInfo) error {
 	return nil
 }
