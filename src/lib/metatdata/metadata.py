@@ -1,5 +1,7 @@
+from email.mime import audio
 import pathlib
 import sys
+from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, USLT, TPE1, TIT2
 from mutagen.oggvorbis import OggVorbis
 
@@ -19,8 +21,11 @@ def cleanMetadata(musicFilePath: str):
 
 def cleanMetadataMp3(musicFilePath: str):
     print("start cleanMetadataMp3 to ", musicFilePath)
-    audio = ID3(musicFilePath)
-    audio.clear()
+    audio = MP3(musicFilePath)
+    # audio = ID3(musicFilePath)
+    audio.tags = None
+    audio.add_tags()
+    # audio.clear()
     audio.save()
 
 
@@ -46,6 +51,11 @@ def writeLyrics(musicFilePath: str, contents: str):
 
 def writeLyricsMp3(musicFilePath: str, contents: str):
     print("start writeLyricsMp3 to ", musicFilePath)
+    # audio = ID3(musicFilePath)
+    # audio.add(USLT(lang='   ', desc='', text=contents))
+    audio = MP3(musicFilePath)
+    if audio.tags is None:
+        audio.add_tags()
     audio = ID3(musicFilePath)
     audio.add(USLT(lang='   ', desc='', text=contents))
     audio.save()
@@ -73,6 +83,11 @@ def writeArtist(musicFilePath: str, contents: str):
 
 def writeArtistMp3(musicFilePath: str, contents: str):
     print("start writeArtistMp3 to ", musicFilePath)
+    # audio = ID3(musicFilePath)
+    # audio.add(TPE1(text=contents))
+    audio = MP3(musicFilePath)
+    if audio.tags is None:
+        audio.add_tags()
     audio = ID3(musicFilePath)
     audio.add(TPE1(text=contents))
     audio.save()
@@ -100,6 +115,11 @@ def writeTitle(musicFilePath: str, contents: str):
 
 def writeTitleMp3(musicFilePath: str, contents: str):
     print("start writeTitleMp3 to ", musicFilePath)
+    # audio = ID3(musicFilePath)
+    # audio.add(TIT2(text=contents))
+    audio = MP3(musicFilePath)
+    if audio.tags is None:
+        audio.add_tags()
     audio = ID3(musicFilePath)
     audio.add(TIT2(text=contents))
     audio.save()
