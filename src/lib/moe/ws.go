@@ -2,6 +2,7 @@ package moe
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/url"
 	"time"
@@ -42,7 +43,7 @@ func (w *MoeWs) Connect() error {
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		log.Fatal("dial:", err)
+		return fmt.Errorf("dial: %v", err)
 	}
 	w.conn = c
 

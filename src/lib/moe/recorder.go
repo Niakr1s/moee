@@ -48,12 +48,18 @@ func (rec *Recorder) Start() error {
 	for {
 		select {
 		// trackInfo usually comes faster then track
-		case info := <-trackInfoCh:
+		case info, ok := <-trackInfoCh:
+			if !ok {
+				return fmt.Errorf("couldn't get track info")
+			}
 			log.Printf("got track info: %v", info)
 			prevTrackInfo = currentTrackInfo
 			currentTrackInfo = info
 
-		case track := <-trackCh:
+		case track, ok := <-trackCh:
+			if !ok {
+				return fmt.Errorf("couldn't get track")
+			}
 			trackInfo := prevTrackInfo
 			log.Printf("got track: %v", track)
 
